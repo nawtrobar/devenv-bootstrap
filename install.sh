@@ -124,6 +124,10 @@ link_claude() {
   # Hooks must be executable
   chmod +x "$DOTFILES_DIR/claude/hooks/"*.sh 2>/dev/null || true
   link "$DOTFILES_DIR/claude/hooks"          "$HOME/.claude/hooks"
+
+  # Skills plugin — loaded automatically from ~/.claude/skills/
+  mkdir -p "$HOME/.claude/skills"
+  link "$DOTFILES_DIR/claude/plugin"         "$HOME/.claude/skills/devenv-bootstrap"
   ok "Claude config linked"
 }
 

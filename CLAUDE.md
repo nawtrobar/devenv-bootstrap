@@ -21,7 +21,9 @@ devenv-bootstrap/
     ├── settings.json   # Linked to ~/.claude/settings.json
     ├── commands/       # Linked to ~/.claude/commands/  (custom slash commands)
     ├── agents/         # Linked to ~/.claude/agents/    (custom sub-agents)
-    └── hooks/          # Linked to ~/.claude/hooks/     (event hooks)
+    ├── hooks/          # Linked to ~/.claude/hooks/     (event hooks)
+    └── plugin/         # Linked to ~/.claude/skills/devenv-bootstrap/ (auto-loaded skills)
+        └── skills/     # Model-invoked skills (auto-triggered by context)
 ```
 
 ## Install
@@ -33,6 +35,23 @@ bash install.sh
 ```
 
 The script installs packages, sets up Oh My Zsh + plugins, TPM, neovim, Claude Code, then symlinks all dotfiles.
+
+## Claude skills (auto-triggered)
+
+Skills are automatically applied by Claude when the context matches — no slash command needed. They live in `claude/plugin/skills/` and are loaded as a plugin from `~/.claude/skills/devenv-bootstrap/`.
+
+| Skill | Auto-triggers when... |
+|-------|----------------------|
+| `brainstorming` | User describes a new feature, asks how to approach something, or has an idea to explore |
+| `tdd` | Writing any new function, class, endpoint, or component |
+| `systematic-debugging` | Investigating a bug, error, test failure, or unexpected behavior |
+| `verification-before-completion` | About to report any task, fix, or feature as done |
+| `writing-plans` | Turning an approved spec into a step-by-step implementation plan |
+| `subagent-driven-development` | Complex multi-component tasks needing parallel specialist work |
+| `using-git-worktrees` | Starting isolated feature work in a new branch |
+| `finishing-a-development-branch` | Feature branch is complete and ready to merge or push |
+| `requesting-code-review` | User wants code changes reviewed |
+| `receiving-code-review` | Review findings have been returned and need to be addressed |
 
 ## Claude commands
 
