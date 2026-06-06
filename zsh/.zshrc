@@ -99,6 +99,10 @@ export FZF_DEFAULT_OPTS="
   --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
 "
 
+# ── Vagrant (WSL2) ───────────────────────────────────────────────────────────
+export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
+export PATH="$PATH:/mnt/c/Windows/System32"
+
 # ── SSH agent ────────────────────────────────────────────────────────────────
 if ! ssh-add -l &>/dev/null; then
   eval "$(ssh-agent -s)" > /dev/null
