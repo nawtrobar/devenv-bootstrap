@@ -36,7 +36,15 @@ BRANCH=$(git branch --show-current)
 - `GIT_DIR != GIT_COMMON`, named branch: linked worktree → 4-option menu (with cleanup)
 - `GIT_DIR != GIT_COMMON`, detached HEAD: externally managed → 3-option menu (no local merge)
 
-## Step 3: Present options
+## Step 3: Determine base branch
+
+```bash
+git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
+```
+
+If ambiguous, ask: "This branch split from `main` — is that correct?"
+
+## Step 4: Present options
 
 **Normal repo or named-branch worktree:**
 ```
@@ -61,7 +69,7 @@ Tests passing. You're on a detached HEAD (externally managed workspace).
 Which option?
 ```
 
-## Step 4: Execute
+## Step 5: Execute
 
 ### Option 1 — Merge locally
 ```bash
@@ -71,7 +79,7 @@ git checkout <base-branch> && git pull
 git merge <feature-branch>
 <run tests again — verify merged result is clean>
 ```
-Then remove worktree (Step 5), then delete branch: `git branch -d <feature-branch>`
+Then remove worktree (Step 6), then delete branch: `git branch -d <feature-branch>`
 
 ### Option 2 — Push and create PR
 ```bash
@@ -101,15 +109,15 @@ This permanently deletes:
 
 Type 'discard' to confirm.
 ```
-Wait for the exact word "discard". Then: remove worktree (Step 5), then `git branch -D <feature-branch>`.
+Wait for the exact word "discard". Then: remove worktree (Step 6), then `git branch -D <feature-branch>`.
 
-## Step 5: Worktree cleanup (Options 1 and 4 only)
+## Step 6: Worktree cleanup (Options 1 and 4 only)
 
 ```bash
 WORKTREE_PATH=$(git rev-parse --show-toplevel)
 ```
 
-- If path is under `.worktrees/`, `worktrees/`: we created it, we remove it
+- If path is under `.worktrees/`, `worktrees/`, or `~/.config/superpowers/worktrees/`: we created it, we remove it
   ```bash
   MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
   cd "$MAIN_ROOT"
