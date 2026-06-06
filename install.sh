@@ -66,6 +66,14 @@ install_omz() {
     git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting \
       "$custom/plugins/zsh-syntax-highlighting"
   fi
+  if [ ! -d "$custom/plugins/zsh-history-substring-search" ]; then
+    git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search \
+      "$custom/plugins/zsh-history-substring-search"
+  fi
+  if [ ! -d "$custom/plugins/zsh-vi-mode" ]; then
+    git clone --depth=1 https://github.com/jeffreytse/zsh-vi-mode \
+      "$custom/plugins/zsh-vi-mode"
+  fi
   if [ ! -d "$custom/themes/powerlevel10k" ]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \
       "$custom/themes/powerlevel10k"
@@ -99,6 +107,7 @@ install_claude() {
 link_dotfiles() {
   info "Linking dotfiles..."
   link "$DOTFILES_DIR/zsh/.zshrc"      "$HOME/.zshrc"
+  link "$DOTFILES_DIR/zsh/p10k.zsh"   "$HOME/.p10k.zsh"
   link "$DOTFILES_DIR/zsh/aliases.zsh" "$HOME/.config/zsh/aliases.zsh"
   link "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
   link "$DOTFILES_DIR/nvim"            "$HOME/.config/nvim"

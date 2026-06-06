@@ -51,9 +51,21 @@ The script installs packages, sets up Oh My Zsh + plugins, TPM, neovim, Claude C
 | `architect` | Designs feature architectures with concrete blueprints |
 | `debugger` | Hypothesis-driven bug tracing |
 
+## Zsh features
+
+| Feature | How |
+|---------|-----|
+| Vim mode | `zsh-vi-mode` — beam cursor in insert, block in normal; `jk` to escape |
+| History search | Up/Down arrows filter by prefix typed; `j`/`k` in normal mode too |
+| Inline suggestions | `Ctrl+Space` to accept ghost text from history |
+| Git prompt | p10k `vcs` segment: branch + staged/unstaged/untracked/ahead/behind/stash |
+| Syntax highlighting | Commands green, paths cyan, strings yellow, errors red |
+| FZF | Catppuccin Mocha theme; `Ctrl+T` files, `Alt+C` dirs, `Ctrl+R` history |
+
 ## Notes
 
-- MCP server configs in `claude/settings.json` use `${GITHUB_TOKEN}` — set this in your environment.
-- After install, run `exec zsh` then `p10k configure` to set up the Powerlevel10k prompt.
+- MCP servers requiring keys: set `GITHUB_TOKEN` and `BRAVE_API_KEY` in your environment before launching Claude.
+- `memory` MCP needs no key — stores a knowledge graph in `~/.local/share/`.
+- After install, run `exec zsh` — p10k.zsh is pre-configured (skip the wizard or run `p10k configure` to regenerate).
 - First `nvim` launch will auto-install all LazyVim plugins.
 - Tmux plugins install with `<prefix>I` (Ctrl-a then I) after first launch.
