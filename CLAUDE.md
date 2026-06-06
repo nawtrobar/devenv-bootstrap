@@ -110,6 +110,19 @@ Skills are automatically applied by Claude when the context matches — no slash
 | Syntax highlighting | Commands green, paths cyan, strings yellow, errors red |
 | FZF | Catppuccin Mocha theme; `Ctrl+T` files, `Alt+C` dirs, `Ctrl+R` history |
 
+## Audio feedback (Claudio)
+
+[Claudio](https://claudio.click) plays contextual sounds for Claude hook events — different sounds for tool starts, successes, failures, prompts, completions, and git subcommands (`git commit` vs `npm test` vs `go build` each sound different).
+
+```bash
+claudio status       # check audio setup
+claudio volume 0.5   # adjust volume
+claudio mute         # silence
+claudio unmute
+```
+
+WSL requires PulseAudio or WSLg for audio. Run `claudio status` after bootstrap to verify.
+
 ## Notes
 
 - MCP servers requiring keys: set `GITHUB_TOKEN` and `BRAVE_API_KEY` in your environment before launching Claude.

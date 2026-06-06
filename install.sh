@@ -103,6 +103,40 @@ install_claude() {
   fi
 }
 
+# ── Go ───────────────────────────────────────────────────────────────────────
+install_go() {
+  if command -v go &>/dev/null; then
+    ok "Go already installed ($(go version))"
+    return
+  fi
+  info "Installing Go..."
+  local GO_VERSION="1.24.0"
+  local tmp
+  tmp=$(mktemp -d)
+  curl -sL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o "$tmp/go.tar.gz"
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf "$tmp/go.tar.gz"
+  export PATH="$PATH:/usr/local/go/bin"
+  ok "Go ${GO_VERSION} installed"
+}
+
+# ── Claudio (audio feedback for Claude Code) ─────────────────────────────────
+install_claudio() {
+  export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
+  if command -v claudio &>/dev/null; then
+    ok "Claudio already installed"
+  else
+    info "Installing Claudio..."
+    go install claudio.click/cmd/claudio@latest
+    ok "Claudio installed"
+  fi
+  # Install hooks into ~/.claude/settings.json (our symlink) — preserves existing hooks
+  info "Installing Claudio hooks..."
+  claudio install --agent claude --scope user
+  ok "Claudio hooks installed"
+  warn "WSL note: audio requires PulseAudio or WSLg. Run 'claudio status' to verify."
+}
+
 # ── Symlink dotfiles ─────────────────────────────────────────────────────────
 link_dotfiles() {
   info "Linking dotfiles..."
@@ -150,8 +184,10 @@ main() {
   install_omz
   install_tpm
   install_claude
+  install_go
   link_dotfiles
   link_claude
+  install_claudio
   set_shell
   ok "Bootstrap complete! Start a new shell or run: exec zsh"
 }
