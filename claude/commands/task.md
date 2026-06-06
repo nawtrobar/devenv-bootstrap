@@ -1,93 +1,143 @@
 ---
-description: Autonomously complete a development task end-to-end by delegating to specialist engineers. The tech-lead plans the work, engineers implement in dependency order, then QA and security review before a final code-review pass.
+description: Autonomously complete a development task end-to-end. tech-lead plans → engineers implement → two-stage review per engineer (spec then quality) → QA → security → final review. No completion claims without fresh verification evidence.
 allowed-tools: Glob, Grep, Read, Edit, Write, Bash, Agent, TodoWrite
 ---
 
-# Autonomous task execution
+# Autonomous task: $ARGUMENTS
 
-Complete the following task end-to-end: **$ARGUMENTS**
+## Verification mandate
+
+```
+NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+```
+
+Before marking any phase complete: run the relevant command, read the full output, then report. "Should be passing" is not verification.
 
 ---
 
 ## Phase 1 — Planning (tech-lead)
 
-Invoke the `tech-lead` agent with:
-- The task description above
-- Instruction to read the codebase and produce a DELEGATION PLAN in the format defined in its system prompt
+Invoke the `tech-lead` agent with the task description and the full codebase context. It will produce a DELEGATION PLAN with:
+- Which engineers are needed and in what order
+- Each engineer's specific scope and "done when" criteria
+- Explicit API contracts and interfaces that downstream engineers depend on
 
-Parse the plan output to extract:
-- Which engineers are needed (frontend, backend, devops, qa, security — or a subset)
-- What each engineer's specific scope and "done when" criteria are
-- The execution order and dependencies
-
-If the tech-lead says the task is too ambiguous, surface its questions to the user and stop.
+If tech-lead says the task is too ambiguous: surface its questions and stop. Do not proceed with an ambiguous plan.
 
 ---
 
-## Phase 2 — Implementation (engineers in dependency order)
+## Phase 2 — Implementation with two-stage review
 
-Use the execution order from the plan. The standard order is:
+For each engineer in the execution order from the plan:
 
-1. **backend-engineer** (if needed) — pass: the task scope + "Done when" criteria + instruction to output API contracts
-2. **frontend-engineer** (if needed) — pass: the task scope + the API contracts from step 1
-3. **devops-engineer** (if needed) — pass: the task scope + what was built in steps 1-2
+### 2a. Engineer implements
+Pass: scoped task description + "done when" criteria + any upstream contracts (API shapes, type definitions, component list) from prior engineers.
 
-After each engineer completes, read their output report before proceeding to the next.
+Engineer reports back with: files changed, contracts produced, how to verify.
 
-If an engineer surfaces a blocker or open question that prevents another engineer from starting, pause and resolve it before continuing.
+### 2b. Spec compliance review (spec-reviewer)
+Invoke `spec-reviewer` with:
+- The engineer's assigned spec/scope
+- The engineer's report
+- Instruction to verify independently by reading the actual code
+
+**If spec-reviewer finds issues:** Send findings back to the same engineer to fix, then re-run spec-reviewer. Do not proceed to quality review until spec compliance passes.
+
+### 2c. Code quality review (code-reviewer)
+Only invoke after spec compliance passes.
+
+Pass: what was built (from engineer report), the plan/requirements, base SHA before this engineer's work, current HEAD SHA.
+
+**If code-reviewer finds Critical or Important issues:** Send findings back to the engineer to fix, then re-run code-reviewer. Only Minor issues may be deferred.
+
+### Standard execution order
+1. `backend-engineer` — no dependencies; outputs API contracts
+2. `frontend-engineer` — after backend; consumes contracts
+3. `devops-engineer` — after backend; if infra changes needed
+4. *(repeat 2a → 2b → 2c for each)*
+
+If an engineer surfaces a blocker that prevents downstream engineers from starting: resolve it before continuing.
 
 ---
 
-## Phase 3 — Quality gate
+## Phase 3 — QA
 
-4. **qa-engineer** — pass: the QA scope from the plan + the API contracts + list of components built. Instruction: run the test suite, write missing tests, report any bugs found.
+Invoke `qa-engineer` with:
+- QA scope from the plan
+- API contracts from backend engineer
+- Component list from frontend engineer
+- Instruction to run the test suite, write missing tests, and report any bugs found
 
-   - If QA finds bugs: invoke the appropriate engineer (backend or frontend) to fix them, then re-run QA.
+**If QA finds bugs:** Send each bug to the appropriate engineer (backend or frontend), have them fix it using `/tdd` discipline, then re-run QA.
 
-5. **security-engineer** — pass: instruction to review all changes made during this task for security issues.
-
-   - If security verdict is BLOCK: invoke the appropriate engineer to fix critical/high findings, then re-run security review.
-
----
-
-## Phase 4 — Final review
-
-6. **code-reviewer** — pass: instruction to review the full diff (`git diff main..HEAD` or the appropriate base) for correctness bugs, security issues, and simplification opportunities.
+**Verify:** Run the test suite after QA completes. Read the output. Report actual pass count.
 
 ---
 
-## Phase 5 — Summary
+## Phase 4 — Security
 
-After all phases complete, output a concise summary:
+Invoke `security-engineer` with:
+- Instruction to review all changes made during this task
+- Focus: new endpoints, auth changes, user input handling, data exposure
+
+**If security verdict is BLOCK:** Send Critical/High findings to the appropriate engineer, have them fix, then re-run security review. Only proceed to final review after a PASS verdict.
+
+---
+
+## Phase 5 — Final review
+
+Invoke `code-reviewer` for a final pass on the full diff since the task began:
+```bash
+git diff <sha-before-task>..HEAD
+```
+
+This catches anything the per-engineer reviews missed and confirms the integrated whole is coherent.
+
+---
+
+## Phase 6 — Summary
+
+After all phases complete, run fresh verification:
+
+```bash
+# Run the full test suite — read the actual output
+<test command>
+```
+
+Then report:
 
 ```
 ## Task complete: <task title>
 
-### What was built
-<2-4 bullet points describing the user-visible or system-level changes>
+### Verification
+Tests: <N> passing, 0 failing (run <timestamp>)
 
-### Engineers involved
-- backend-engineer: <one-line summary of what they built>
-- frontend-engineer: <one-line summary>
+### What was built
+<2-4 bullets — user-visible or system-level changes>
+
+### Engineers
+- backend-engineer: <one-line>
+- frontend-engineer: <one-line>
 - ...
 
-### Tests added
-<count and brief description>
-
-### Security verdict
-<PASS / BLOCK-then-fixed, with any notable findings>
+### Review results
+- Spec compliance: passed for all engineers
+- Code quality: <N Critical fixed, N Important fixed, N Minor deferred>
+- Security: PASS / BLOCK-then-fixed (<summary>)
 
 ### Files changed
-<git diff --stat output or equivalent>
+<git diff --stat from task start to HEAD>
 
-### Next steps
-<any follow-up items surfaced by engineers, or None>
+### Follow-up items
+<anything surfaced but deferred, or None>
 ```
 
 ---
 
 ## Rules
-- Do not skip the security phase for tasks that add endpoints, handle user input, or change auth logic
-- Do not mark the task complete if any engineer reported an unresolved blocker
-- If the codebase has no test suite, qa-engineer should note this rather than invent one from scratch
-- Keep each engineer's prompt self-contained — include all context they need (they don't share memory)
+
+- Never skip the security phase for tasks that add endpoints, handle user input, or change auth
+- Never mark the task complete if any engineer has an unresolved blocker
+- Two-stage review is per-engineer — not just at the end
+- Spec compliance must pass before code quality review starts
+- Fresh test run required before claiming the task is done
