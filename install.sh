@@ -41,7 +41,7 @@ install_nvim() {
   curl -sL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz" \
     -o "$tmp/nvim.tar.gz"
   tar -xzf "$tmp/nvim.tar.gz" -C "$tmp"
-  sudo install -m 0755 "$tmp"/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+  sudo cp -r "$tmp"/nvim-linux-x86_64/* /usr/local/
   ok "Neovim installed"
 }
 
@@ -90,6 +90,17 @@ install_tpm() {
   else
     ok "TPM already installed"
   fi
+}
+
+# ── code-server ─────────────────────────────────────────────────────────────
+install_code_server() {
+  if command -v code-server &>/dev/null; then
+    ok "code-server already installed ($(code-server --version | head -1))"
+    return
+  fi
+  info "Installing code-server..."
+  curl -fsSL https://code-server.dev/install.sh | sh -s -- --method standalone
+  ok "code-server installed"
 }
 
 # ── Claude Code ─────────────────────────────────────────────────────────────
@@ -145,6 +156,8 @@ link_dotfiles() {
   link "$DOTFILES_DIR/zsh/aliases.zsh" "$HOME/.config/zsh/aliases.zsh"
   link "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
   link "$DOTFILES_DIR/nvim"            "$HOME/.config/nvim"
+  chmod +x "$DOTFILES_DIR/bin/dev"
+  link "$DOTFILES_DIR/bin/dev"         "$HOME/.local/bin/dev"
   ok "Dotfiles linked"
 }
 
@@ -169,8 +182,14 @@ link_claude() {
 set_shell() {
   if [ "$SHELL" != "$(which zsh)" ]; then
     info "Setting default shell to zsh..."
-    chsh -s "$(which zsh)"
-    ok "Default shell set to zsh (restart terminal)"
+    # Use sudo usermod when passwordless sudo is available (e.g. Vagrant provisioning),
+    # since chsh requires PAM authentication which fails non-interactively.
+    if sudo -n usermod -s "$(which zsh)" "$USER" 2>/dev/null; then
+      ok "Default shell set to zsh (restart terminal)"
+    else
+      chsh -s "$(which zsh)"
+      ok "Default shell set to zsh (restart terminal)"
+    fi
   else
     ok "zsh already default shell"
   fi
@@ -183,11 +202,16 @@ main() {
   install_nvim
   install_omz
   install_tpm
+  install_code_server
   install_claude
   install_go
   link_dotfiles
   link_claude
-  install_claudio
+  if [ "${SKIP_CLAUDIO:-0}" != "1" ]; then
+    install_claudio
+  else
+    info "Skipping Claudio (SKIP_CLAUDIO=1)"
+  fi
   set_shell
   ok "Bootstrap complete! Start a new shell or run: exec zsh"
 }
