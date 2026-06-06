@@ -101,7 +101,7 @@ export FZF_DEFAULT_OPTS="
 
 # ── Vagrant (WSL2) ───────────────────────────────────────────────────────────
 export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
-export PATH="$PATH:/mnt/c/Windows/System32"
+export PATH="$PATH:/mnt/c/Windows/System32:/mnt/c/Program Files/Vagrant/bin"
 
 # ── SSH agent ────────────────────────────────────────────────────────────────
 if ! ssh-add -l &>/dev/null; then
