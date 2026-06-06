@@ -99,6 +99,12 @@ export FZF_DEFAULT_OPTS="
   --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
 "
 
+# ── SSH agent ────────────────────────────────────────────────────────────────
+if ! ssh-add -l &>/dev/null; then
+  eval "$(ssh-agent -s)" > /dev/null
+  ssh-add ~/.ssh/id_ed25519 2>/dev/null
+fi
+
 # ── Aliases ───────────────────────────────────────────────────────────────────
 [[ -f "$HOME/.config/zsh/aliases.zsh" ]] && source "$HOME/.config/zsh/aliases.zsh"
 
