@@ -1,0 +1,23 @@
+# Sensitive
+.env
+*.local
+*.secret
+secrets/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.viminfo
+
+# p10k (generated, not committed — run `p10k configure` to regenerate)
+zsh/.p10k.zsh
+
+# nvim: lazy lock is committed to pin plugin versions
+# nvim/lazy-lock.json  <- intentionally tracked
+
+# tmux session files
+.tmux/resurrect/
