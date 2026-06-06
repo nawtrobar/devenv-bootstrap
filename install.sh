@@ -148,6 +148,21 @@ install_claudio() {
   warn "WSL note: audio requires PulseAudio or WSLg. Run 'claudio status' to verify."
 }
 
+# ── Vagrant (WSL2) ───────────────────────────────────────────────────────────
+install_vagrant_wsl() {
+  if command -v vagrant &>/dev/null; then
+    ok "vagrant already in PATH"
+    return
+  fi
+  local win_vagrant="/mnt/c/Program Files/Vagrant/bin/vagrant.exe"
+  if [ -f "$win_vagrant" ]; then
+    sudo ln -sf "$win_vagrant" /usr/local/bin/vagrant
+    ok "Vagrant symlinked from Windows install"
+  else
+    warn "Vagrant not found at $win_vagrant — install Vagrant on Windows first"
+  fi
+}
+
 # ── Symlink dotfiles ─────────────────────────────────────────────────────────
 link_dotfiles() {
   info "Linking dotfiles..."
@@ -202,6 +217,7 @@ main() {
   install_nvim
   install_omz
   install_tpm
+  install_vagrant_wsl
   install_code_server
   install_claude
   install_go
