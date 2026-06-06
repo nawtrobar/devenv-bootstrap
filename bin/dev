@@ -33,7 +33,10 @@ tmux send-keys -t "$rtop" "code-server" Enter
 # Bottom right ($rbot): regular terminal — left empty
 
 # ── Window 2: terminals ───────────────────────────────────────────────────────
-tmux new-window -t "$SESSION" -n "terms"
+# -a (insert after) so this works when `dev` is run from inside an existing
+# tmux session; a plain `new-window -t dev` targets the session's current
+# window index (1) and fails with "index 1 in use".
+tmux new-window -a -t "$SESSION" -n "terms"
 tmux split-window -h -t "$SESSION:terms"
 
 # Focus window 1, claude pane
