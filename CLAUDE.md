@@ -38,6 +38,8 @@ The script installs packages, sets up Oh My Zsh + plugins, TPM, neovim, Claude C
 
 | Command | Description |
 |---------|-------------|
+| `/task <description>` | Autonomous end-to-end task: tech-lead plans → engineers implement → QA → security → review |
+| `/sprint <features>` | Implement a sprint of features sequentially via the full task flow |
 | `/commit` | Stage changes and write a conventional commit |
 | `/plan <feature>` | Design implementation plan before coding |
 | `/debug <issue>` | Systematic root-cause debugging |
@@ -45,11 +47,38 @@ The script installs packages, sets up Oh My Zsh + plugins, TPM, neovim, Claude C
 
 ## Claude agents
 
-| Agent | Description |
-|-------|-------------|
-| `code-reviewer` | Reviews diffs for bugs and security issues |
-| `architect` | Designs feature architectures with concrete blueprints |
-| `debugger` | Hypothesis-driven bug tracing |
+### Orchestration
+| Agent | Role |
+|-------|------|
+| `tech-lead` | Reads codebase + requirements → structured delegation plan with engineer assignments and execution order |
+
+### Specialist engineers
+| Agent | Domain |
+|-------|--------|
+| `frontend-engineer` | React/TS/CSS, components, state management, API consumption, accessibility |
+| `backend-engineer` | REST/GraphQL APIs, business logic, auth, DB schemas/queries, validation |
+| `devops-engineer` | Docker, GitHub Actions CI/CD, env config, secrets management |
+| `qa-engineer` | Unit/integration/e2e tests, coverage analysis, edge cases, bug surfacing |
+| `security-engineer` | OWASP top-10, injection, auth/authz audit, secrets detection — returns PASS/BLOCK verdict |
+
+### Quality & analysis
+| Agent | Domain |
+|-------|--------|
+| `code-reviewer` | Correctness bugs, security issues, simplification opportunities |
+| `architect` | System design, ADRs, cross-cutting structural decisions |
+| `debugger` | Hypothesis-driven root-cause analysis for specific bugs |
+
+### Autonomous task flow
+```
+/task "add user profile page"
+  └── tech-lead          → delegation plan
+  └── backend-engineer   → API endpoints + DB schema (outputs contracts)
+  └── frontend-engineer  → UI components (consumes contracts)
+  └── devops-engineer    → infra/pipeline changes (if needed)
+  └── qa-engineer        → tests + bug report
+  └── security-engineer  → PASS or BLOCK
+  └── code-reviewer      → final diff review
+```
 
 ## Zsh features
 
