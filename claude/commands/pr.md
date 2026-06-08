@@ -11,6 +11,7 @@ Push the current branch and open a pull request.
 4. Create the PR with `gh pr create`:
    - Title: concise, ≤70 chars, imperative mood
    - Body: brief bullet summary + test plan checklist
-5. Print the PR URL.
+5. Launch the code-reviewer agent in the background against the PR diff.
+6. End your response with the PR URL on its own line so the user can navigate directly to it.
 
 If the branch is already pushed and a PR exists, open it with `gh pr view --web` instead.
