@@ -111,7 +111,7 @@ After all features are committed:
 <tech debt, follow-on features, or risks to address next sprint>
 ```
 
-4. Await user review — do not claim the sprint complete until the user has reviewed.
+3. Await user review — do not claim the sprint complete until the user has reviewed.
 
 ---
 
