@@ -143,7 +143,7 @@ install_claudio() {
   fi
   # Install hooks into ~/.claude/settings.json (generated file — claudio merges hooks in place)
   info "Installing Claudio hooks..."
-  claudio install --agent claude --scope user
+  claudio install --scope user
   ok "Claudio hooks installed"
   warn "WSL note: audio requires PulseAudio or WSLg. Run 'claudio status' to verify."
 }
