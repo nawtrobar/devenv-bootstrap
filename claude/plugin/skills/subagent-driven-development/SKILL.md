@@ -103,6 +103,8 @@ Invoke `code-reviewer` for a final pass on the full diff since the task began:
 git diff <sha-before-task>..HEAD
 ```
 
+**If code-reviewer finds Critical or Important issues:** send them to the appropriate engineer to fix, then re-run. Only proceed to Phase 6 after a clean pass.
+
 ---
 
 ## Phase 6 — Commit, push, and PR
@@ -112,9 +114,11 @@ Run the full test suite and read the output.
 
 ### 6b. Commit
 ```bash
+git status          # review before staging — check for unexpected files
 git add -A
-git commit -m "feat: <task title in imperative mood>"
+git commit -m "<type>: <task title in imperative mood>"
 ```
+Choose `type` from: `feat`, `fix`, `refactor`, `chore`.
 
 ### 6c. PR
 1. Push and create the PR:
@@ -122,8 +126,8 @@ git commit -m "feat: <task title in imperative mood>"
    git push -u origin HEAD
    gh pr create --title "<task title>" --body "..."
    ```
-2. Launch the code-reviewer sub-agent against the full diff.
-3. End your response with the summary below followed by the PR URL on its own line:
+   PR body: summary bullets of what was built + Phase 5 review findings + test plan checklist.
+2. End your response with the summary below followed by the PR URL on its own line:
 
 ```
 ## Task summary: <task title>
@@ -141,7 +145,7 @@ Tests: <N> passing, 0 failing
 ### Review results
 - Spec compliance: passed for all engineers
 - Code quality: <N Critical fixed, N Important fixed, N Minor deferred>
-- Security: PASS
+- Security: PASS / BLOCK-then-fixed
 
 ### Files changed
 <git diff --stat>

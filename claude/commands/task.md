@@ -105,6 +105,8 @@ git diff <sha-before-task>..HEAD
 
 This catches anything the per-engineer reviews missed and confirms the integrated whole is coherent.
 
+**If code-reviewer finds Critical or Important issues:** send them to the appropriate engineer to fix, then re-run. Only proceed to Phase 6 after a clean pass.
+
 ---
 
 ## Phase 6 — Commit, push, and PR
@@ -118,11 +120,13 @@ Run the full test suite — read the actual output:
 ```
 
 ### 6b. Commit
-Stage and commit all changes with a conventional commit:
+Review what will be staged, then commit:
 ```bash
+git status          # review before staging — check for unexpected files
 git add -A
-git commit -m "feat: <task title in imperative mood>"
+git commit -m "<type>: <task title in imperative mood>"
 ```
+Choose `type` from: `feat` (new capability), `fix` (bug fix), `refactor`, `chore`.
 
 ### 6c. PR
 1. Push the branch and create the PR:
@@ -130,9 +134,8 @@ git commit -m "feat: <task title in imperative mood>"
    git push -u origin HEAD
    gh pr create --title "<task title>" --body "..."
    ```
-   PR body: summary bullets of what was built + test plan checklist.
-2. Launch the code-reviewer sub-agent against the full diff.
-3. End your response with this summary followed by the PR URL on its own line:
+   PR body: summary bullets of what was built + Phase 5 review findings + test plan checklist.
+2. End your response with this summary followed by the PR URL on its own line:
 
 ```
 ## Task summary: <task title>

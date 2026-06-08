@@ -1,6 +1,6 @@
 ---
 description: Plan and implement a sprint of features. Pass a list of features/stories as arguments, or point to a file. Tech-lead sequences and sizes them, then each feature is implemented via the full autonomous task flow.
-allowed-tools: Glob, Grep, Read, Write, Bash(git log:*), Bash(git status:*), Bash(git diff:*), Agent, TodoWrite
+allowed-tools: Glob, Grep, Read, Edit, Write, Bash(git log:*), Bash(git status:*), Bash(git diff:*), Bash(git checkout:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(gh pr create:*), Bash(gh pr view:*), Agent, TodoWrite
 ---
 
 # Sprint execution
@@ -57,7 +57,7 @@ Output format:
 
 ## Phase 2 — Shared infrastructure
 
-If the tech-lead identified shared infrastructure, implement it first using the `/task` flow (invoke tech-lead → engineers → QA → security → review).
+If the tech-lead identified shared infrastructure, implement it first using **phases 1–5 of the task flow** (tech-lead → engineers → QA → security → final review). Skip task Phase 0 (branch already exists) and task Phase 6 (no per-feature PR — the sprint PR is created in Phase 4).
 
 Commit the shared infrastructure before moving to features.
 
@@ -67,7 +67,7 @@ Commit the shared infrastructure before moving to features.
 
 For each feature in the sequence:
 
-1. Run the full `/task` flow for that feature
+1. Run **phases 1–5 of the task flow** for that feature (tech-lead → engineers → QA → security → final review). Skip task Phase 0 (branch already exists) and task Phase 6 (no per-feature PR).
 2. Commit the feature when complete (conventional commit: `feat: <feature name>`)
 3. Proceed to the next feature
 
