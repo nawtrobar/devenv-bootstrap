@@ -61,4 +61,10 @@ alias free='free -h'
 alias top='htop 2>/dev/null || top'
 
 # ── Claude ───────────────────────────────────────────────────────────────────
+# Inside the disposable Vagrant dev VM, run Claude with no permission prompts.
+# /vagrant exists only in the VM (never on the WSL host), so on the host this is
+# never defined and Claude keeps its normal guardrails.
+if [ -d /vagrant ]; then
+  alias claude='claude --dangerously-skip-permissions'
+fi
 alias cl='claude'
