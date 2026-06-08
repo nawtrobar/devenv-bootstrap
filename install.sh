@@ -141,7 +141,7 @@ install_claudio() {
     go install claudio.click/cmd/claudio@latest
     ok "Claudio installed"
   fi
-  # Install hooks into ~/.claude/settings.json (our symlink) — preserves existing hooks
+  # Install hooks into ~/.claude/settings.json (generated file — claudio merges hooks in place)
   info "Installing Claudio hooks..."
   claudio install --agent claude --scope user
   ok "Claudio hooks installed"
@@ -171,8 +171,9 @@ link_claude() {
     *\|*) die "\$HOME contains '|' — cannot safely substitute paths in settings template" ;;
   esac
   if [ -f "$HOME/.claude/settings.json" ] && [ ! -L "$HOME/.claude/settings.json" ]; then
-    warn "Backing up existing ~/.claude/settings.json -> ~/.claude/settings.json.bak"
-    cp "$HOME/.claude/settings.json" "$HOME/.claude/settings.json.bak"
+    local bak="$HOME/.claude/settings.json.$(date +%Y%m%dT%H%M%S).bak"
+    warn "Backing up existing ~/.claude/settings.json -> $bak"
+    cp "$HOME/.claude/settings.json" "$bak"
   fi
   sed "s|__HOME__|$HOME|g" "$DOTFILES_DIR/claude/settings.json.template" \
     > "$HOME/.claude/settings.json"

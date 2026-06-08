@@ -27,13 +27,20 @@ if [ ! -f "$SETTINGS" ]; then
   exit 1
 fi
 
-# Idempotent — both keys are written atomically so checking one is sufficient
-if jq -e '.extraKnownMarketplaces["resume-kit"]' "$SETTINGS" &>/dev/null; then
+jq empty "$SETTINGS" 2>/dev/null || {
+  echo "[error] $SETTINGS is not valid JSON. Inspect it before proceeding."
+  exit 1
+}
+
+# Idempotent — check both keys since either could be present without the other
+if jq -e '.extraKnownMarketplaces["resume-kit"] and .enabledPlugins["resume-kit@resume-kit"]' \
+    "$SETTINGS" &>/dev/null; then
   echo "[ok] resume-kit already configured in $SETTINGS"
   exit 0
 fi
 
 tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
 # Use // {} to safely handle null values for either key
 jq \
   --arg path "$PLUGIN_PATH" \
