@@ -61,10 +61,20 @@ alias free='free -h'
 alias top='htop 2>/dev/null || top'
 
 # ── Claude ───────────────────────────────────────────────────────────────────
-# Inside the disposable Vagrant dev VM, run Claude with no permission prompts.
-# /vagrant exists only in the VM (never on the WSL host), so on the host this is
-# never defined and Claude keeps its normal guardrails.
-if [ -d /vagrant ]; then
+# Inside the Vagrant dev VM, run Claude with no permission prompts. Gated on
+# /vagrant + its Vagrantfile so it only fires in a real Vagrant guest — never on
+# the WSL host (no /vagrant), which keeps full guardrails.
+#
+# CAVEAT — the VM is only *partly* disposable. Its synced folders are LIVE host
+# paths, not throwaway state:
+#   /vagrant                     -> this repo's project dir on the host
+#   /opt/devenv-bootstrap        -> the devenv-bootstrap host repo
+#   /opt/fiverr-agents-and-skills-> the fiverr-kit host repo
+# With --dangerously-skip-permissions, a destructive command (e.g. rm -rf) under
+# any of those trees deletes REAL host files with no prompt. The VM OS is
+# disposable; the synced trees are not. Do throwaway work outside them, and
+# commit often. (If you add more synced_folder mounts, they carry the same risk.)
+if [ -d /vagrant ] && [ -f /vagrant/Vagrantfile ]; then
   alias claude='claude --dangerously-skip-permissions'
 fi
 alias cl='claude'
