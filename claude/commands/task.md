@@ -163,7 +163,7 @@ Tests: <N> passing, 0 failing
 <anything deferred, or None>
 ```
 
-4. Await user review — do not claim the task complete until the user has reviewed.
+3. Await user review — do not claim the task complete until the user has reviewed.
 
 ---
 

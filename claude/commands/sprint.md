@@ -1,6 +1,6 @@
 ---
 description: Plan and implement a sprint of features. Pass a list of features/stories as arguments, or point to a file. Tech-lead sequences and sizes them, then each feature is implemented via the full autonomous task flow.
-allowed-tools: Glob, Grep, Read, Edit, Write, Bash(git log:*), Bash(git status:*), Bash(git diff:*), Bash(git checkout:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(gh pr create:*), Bash(gh pr view:*), Agent, TodoWrite
+allowed-tools: Glob, Grep, Read, Edit, Write, Bash(git log:*), Bash(git status:*), Bash(git diff:*), Bash(git checkout:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(gh pr create:*), Bash(gh pr view:*), Bash(gh pr list:*), Agent, TodoWrite
 ---
 
 # Sprint execution
@@ -79,13 +79,13 @@ For features the tech-lead marked as parallelizable: note them as candidates for
 
 After all features are committed:
 
-1. Push the sprint branch and create a PR:
+1. Launch the code-reviewer sub-agent against the full sprint diff (before opening the PR so findings can go in the body).
+2. Push the sprint branch and create a PR:
    ```bash
    git push -u origin HEAD
    gh pr create --title "sprint: <short-description>" --body "..."
    ```
-   PR body: table of features shipped + test plan checklist.
-2. Launch the code-reviewer sub-agent against the full sprint diff.
+   PR body: table of features shipped + code-reviewer findings from step 1 + test plan checklist.
 3. End your response with the sprint summary below followed by the PR URL on its own line:
 
 ```
@@ -96,6 +96,10 @@ After all features are committed:
 |---------|------|-----------|-------|---------|
 | <name>  | S    | backend, frontend | +12 tests | PASS |
 | ...
+
+### Review results
+- Code quality: <N Critical fixed, N Important fixed, N Minor deferred>
+- Security: PASS / BLOCK-then-fixed (<summary>)
 
 ### Total changes
 <git diff --stat from sprint start to now>
