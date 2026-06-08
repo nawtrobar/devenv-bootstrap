@@ -1,6 +1,6 @@
 ---
 description: Push the current branch and open a GitHub pull request
-allowed-tools: Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git push:*), Bash(gh pr create:*), Bash(gh pr view:*)
+allowed-tools: Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git push:*), Bash(gh pr create:*), Bash(gh pr view:*), Agent
 ---
 
 Push the current branch and open a pull request.
@@ -11,6 +11,8 @@ Push the current branch and open a pull request.
 4. Create the PR with `gh pr create`:
    - Title: concise, ≤70 chars, imperative mood
    - Body: brief bullet summary + test plan checklist
-5. Print the PR URL.
+5. Launch the code-reviewer sub-agent against the PR diff.
+6. End your response with the PR URL on its own line so the user can navigate directly to it.
+7. Await the review result, surface it to the user, then stop — do not claim the task complete until the user has reviewed.
 
 If the branch is already pushed and a PR exists, open it with `gh pr view --web` instead.

@@ -93,6 +93,11 @@ gh pr create --title "<title>" --body "$(cat <<'EOF'
 EOF
 )"
 ```
+After creating the PR:
+1. Launch the code-reviewer as a sub-agent against the PR diff.
+2. End your response with the PR URL on its own line.
+3. Await the review result, surface it to the user, then stop — do not claim the task complete until the user has reviewed.
+
 **Do NOT remove the worktree** — it's needed for PR iteration.
 
 ### Option 3 — Keep as-is

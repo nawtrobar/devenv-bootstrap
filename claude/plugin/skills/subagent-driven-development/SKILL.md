@@ -17,6 +17,18 @@ Before marking any phase complete: run the relevant command, read the full outpu
 
 ---
 
+## Phase 0 — Branch
+
+Before writing any code, create a feature branch:
+
+```bash
+git checkout -b <kebab-case-task-name>
+```
+
+Derive the name from the task description: 3–5 words, kebab-case. If already on a non-main/master branch, skip this step.
+
+---
+
 ## Phase 1 — Planning (tech-lead)
 
 Invoke the `tech-lead` agent with the task description and codebase context. It produces a DELEGATION PLAN with:
@@ -91,17 +103,37 @@ Invoke `code-reviewer` for a final pass on the full diff since the task began:
 git diff <sha-before-task>..HEAD
 ```
 
+**If code-reviewer finds Critical or Important issues:** send them to the appropriate engineer to fix, then re-run. Only proceed to Phase 6 after a clean pass.
+
 ---
 
-## Phase 6 — Summary
+## Phase 6 — Commit, push, and PR
 
-Run fresh verification, then report:
+### 6a. Verify
+Run the full test suite and read the output.
+
+### 6b. Commit
+```bash
+git status          # review before staging — check for unexpected files
+git add -A
+git commit -m "<type>: <task title in imperative mood>"
+```
+Choose `type` from: `feat`, `fix`, `refactor`, `chore`.
+
+### 6c. PR
+1. Push and create the PR:
+   ```bash
+   git push -u origin HEAD
+   gh pr create --title "<task title>" --body "..."
+   ```
+   PR body: summary bullets of what was built + Phase 5 review findings + test plan checklist.
+2. End your response with the summary below followed by the PR URL on its own line:
 
 ```
-## Task complete: <task title>
+## Task summary: <task title>
 
 ### Verification
-Tests: <N> passing, 0 failing (run <timestamp>)
+Tests: <N> passing, 0 failing
 
 ### What was built
 <2-4 bullets>
@@ -113,11 +145,13 @@ Tests: <N> passing, 0 failing (run <timestamp>)
 ### Review results
 - Spec compliance: passed for all engineers
 - Code quality: <N Critical fixed, N Important fixed, N Minor deferred>
-- Security: PASS
+- Security: PASS / BLOCK-then-fixed
 
 ### Files changed
 <git diff --stat>
 ```
+
+3. Await user review — do not claim the task complete until the user has reviewed.
 
 ---
 
@@ -127,3 +161,4 @@ Tests: <N> passing, 0 failing (run <timestamp>)
 - Two-stage review is per-engineer — not just at the end
 - Spec compliance must pass before code quality review starts
 - Fresh test run required before claiming the task is done
+- Always create a branch (Phase 0) before writing any code
