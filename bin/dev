@@ -13,7 +13,7 @@ if tmux has-session -t "$SESSION" 2>/dev/null; then
 fi
 
 # ── Window 1: dev ────────────────────────────────────────────────────────────
-tmux new-session -d -s "$SESSION" -n "dev"
+tmux new-session -d -s "$SESSION" -n "dev" -x "$(tput cols)" -y "$(tput lines)"
 
 # The session starts with one pane (left, large). Grab its id.
 left=$(tmux display-message -p -t "$SESSION:dev" '#{pane_id}')
