@@ -145,7 +145,13 @@ install_claudio() {
   # claudio install exits non-zero if PreToolUse contains non-Claudio hooks alongside its own
   # (a claudio verification bug — the merge itself succeeds and the file is written correctly)
   info "Installing Claudio hooks..."
-  claudio install --scope user || warn "Claudio hook verification reported an error (hooks were merged successfully — safe to ignore)"
+  claudio install --scope user || {
+    if grep -q '"claudio"' "$HOME/.claude/settings.json" 2>/dev/null; then
+      warn "Claudio hook verification reported an error (hooks were merged successfully — safe to ignore)"
+    else
+      die "Claudio hook installation failed — ~/.claude/settings.json does not contain Claudio hooks"
+    fi
+  }
   ok "Claudio hooks installed"
   warn "WSL note: audio requires PulseAudio or WSLg. Run 'claudio status' to verify."
 }
