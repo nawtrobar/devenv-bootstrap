@@ -147,10 +147,10 @@ install_claudio() {
   info "Installing Claudio hooks..."
   local settings="$HOME/.claude/settings.json"
   local before_mtime
-  before_mtime=$(stat -c %Y%N "$settings" 2>/dev/null || echo 0)
+  before_mtime=$(date -r "$settings" +%s%N 2>/dev/null || echo 0)
   claudio install --scope user || {
     local after_mtime
-    after_mtime=$(stat -c %Y%N "$settings" 2>/dev/null || echo 0)
+    after_mtime=$(date -r "$settings" +%s%N 2>/dev/null || echo 0)
     if [ "$after_mtime" -gt "$before_mtime" ]; then
       warn "Claudio hook verification reported an error (hooks were merged successfully — safe to ignore)"
     else
