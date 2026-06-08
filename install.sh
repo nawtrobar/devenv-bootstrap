@@ -175,6 +175,8 @@ link_claude() {
     warn "Backing up existing ~/.claude/settings.json -> $bak"
     cp "$HOME/.claude/settings.json" "$bak"
   fi
+  # Remove any symlink (live or dangling) so the redirect always creates a plain file
+  [ -L "$HOME/.claude/settings.json" ] && rm -f "$HOME/.claude/settings.json"
   sed "s|__HOME__|$HOME|g" "$DOTFILES_DIR/claude/settings.json.template" \
     > "$HOME/.claude/settings.json"
   if grep -q '__HOME__' "$HOME/.claude/settings.json"; then
