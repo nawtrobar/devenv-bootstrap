@@ -145,11 +145,16 @@ install_claudio() {
   # claudio install exits non-zero if PreToolUse contains non-Claudio hooks alongside its own
   # (a claudio verification bug — the merge itself succeeds and the file is written correctly)
   info "Installing Claudio hooks..."
+  local settings="$HOME/.claude/settings.json"
+  local before_mtime
+  before_mtime=$(stat -c %Y "$settings" 2>/dev/null || echo 0)
   claudio install --scope user || {
-    if grep -q '"claudio"' "$HOME/.claude/settings.json" 2>/dev/null; then
+    local after_mtime
+    after_mtime=$(stat -c %Y "$settings" 2>/dev/null || echo 0)
+    if [ "$after_mtime" -gt "$before_mtime" ]; then
       warn "Claudio hook verification reported an error (hooks were merged successfully — safe to ignore)"
     else
-      die "Claudio hook installation failed — ~/.claude/settings.json does not contain Claudio hooks"
+      die "Claudio hook installation failed — $settings was not modified"
     fi
   }
   ok "Claudio hooks installed"
