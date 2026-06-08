@@ -44,8 +44,6 @@
       "Bash(docker images:*)",
       "Bash(git show:*)",
       "Bash(git switch:*)",
-      "Bash(git checkout:*)",
-      "Bash(git restore:*)",
       "Bash(git stash:*)",
       "Bash(git fetch:*)",
       "Bash(git remote:*)",
@@ -57,7 +55,6 @@
       "Bash(stat:*)",
       "Bash(diff:*)",
       "Bash(jq:*)",
-      "Bash(env:*)",
       "Bash(sed -n:*)",
       "Bash(mkdir:*)",
       "Bash(touch:*)"
