@@ -11,6 +11,18 @@ Features to implement: **$ARGUMENTS**
 
 ---
 
+## Phase 0 — Branch
+
+Create a sprint branch before writing any code:
+
+```bash
+git checkout -b sprint/<short-description>
+```
+
+Derive the name from the sprint scope: 2–4 words (e.g. `sprint/user-auth-and-profiles`). If already on a non-main/master branch, skip this step.
+
+---
+
 ## Phase 1 — Sprint planning (tech-lead)
 
 Invoke the `tech-lead` agent with all features and the instruction to produce a **sprint plan**:
@@ -63,12 +75,21 @@ For features the tech-lead marked as parallelizable: note them as candidates for
 
 ---
 
-## Phase 4 — Sprint summary
+## Phase 4 — Push and PR
 
-After all features are complete:
+After all features are committed:
+
+1. Push the sprint branch and create a PR:
+   ```bash
+   git push -u origin HEAD
+   gh pr create --title "sprint: <short-description>" --body "..."
+   ```
+   PR body: table of features shipped + test plan checklist.
+2. Launch the code-reviewer sub-agent against the full sprint diff.
+3. End your response with the sprint summary below followed by the PR URL on its own line:
 
 ```
-## Sprint complete
+## Sprint summary: <description>
 
 ### Features shipped
 | Feature | Size | Engineers | Tests | Security |
@@ -86,9 +107,12 @@ After all features are complete:
 <tech debt, follow-on features, or risks to address next sprint>
 ```
 
+4. Await user review — do not claim the sprint complete until the user has reviewed.
+
 ---
 
 ## Rules
+- Create a branch (Phase 0) before writing any code
 - Commit after each feature so the git log tells the story of the sprint
 - If a feature turns out to be L or XL during implementation, surface this immediately rather than letting it run indefinitely
 - Don't start the next feature if the current one has unresolved security blocks or failing tests
