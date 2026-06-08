@@ -94,7 +94,7 @@ EOF
 )"
 ```
 After creating the PR:
-1. Launch the code-reviewer agent in the background against the PR diff.
+1. Launch the code-reviewer as a sub-agent against the PR diff.
 2. End your response with the PR URL on its own line.
 3. Await the review result, surface it to the user, then stop — do not claim the task complete until the user has reviewed.
 
