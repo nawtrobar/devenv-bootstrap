@@ -21,7 +21,19 @@
       "Bash(npm build:*)"
     ]
   },
+  "model": "opus",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/block-main-commit.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
@@ -33,6 +45,24 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "resume-kit@resume-kit": true,
+    "fiverr-kit@fiverr-agents-and-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "resume-kit": {
+      "source": {
+        "source": "directory",
+        "path": "/mnt/c/Users/nawtr/code/resume-kit"
+      }
+    },
+    "fiverr-agents-and-skills": {
+      "source": {
+        "source": "directory",
+        "path": "/mnt/c/Users/nawtr/code/fiverr-agents-and-skills"
+      }
+    }
   },
   "theme": "dark",
   "mcpServers": {
@@ -73,6 +103,5 @@
       ],
       "env": {}
     }
-  },
-  "model": "opus"
+  }
 }
