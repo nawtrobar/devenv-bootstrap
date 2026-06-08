@@ -18,10 +18,61 @@
       "Bash(which:*)",
       "Bash(npm run:*)",
       "Bash(npm test:*)",
-      "Bash(npm build:*)"
+      "Bash(npm build:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm install:*)",
+      "Bash(npx:*)",
+      "Bash(pnpm:*)",
+      "Bash(tsc:*)",
+      "Bash(eslint:*)",
+      "Bash(prettier:*)",
+      "Bash(jest:*)",
+      "Bash(vitest:*)",
+      "Bash(mvn test:*)",
+      "Bash(mvn compile:*)",
+      "Bash(mvn package:*)",
+      "Bash(mvn verify:*)",
+      "Bash(mvn clean:*)",
+      "Bash(./gradlew:*)",
+      "Bash(pytest:*)",
+      "Bash(pip install:*)",
+      "Bash(python3 -m venv:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker build:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker logs:*)",
+      "Bash(docker images:*)",
+      "Bash(git show:*)",
+      "Bash(git switch:*)",
+      "Bash(git stash:*)",
+      "Bash(git fetch:*)",
+      "Bash(git remote:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(tree:*)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(diff:*)",
+      "Bash(jq:*)",
+      "Bash(sed -n:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)"
     ]
   },
+  "model": "opus",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/block-main-commit.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
@@ -33,6 +84,24 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "resume-kit@resume-kit": true,
+    "fiverr-kit@fiverr-agents-and-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "resume-kit": {
+      "source": {
+        "source": "directory",
+        "path": "/mnt/c/Users/nawtr/code/resume-kit"
+      }
+    },
+    "fiverr-agents-and-skills": {
+      "source": {
+        "source": "directory",
+        "path": "/mnt/c/Users/nawtr/code/fiverr-agents-and-skills"
+      }
+    }
   },
   "theme": "dark",
   "mcpServers": {
@@ -73,6 +142,5 @@
       ],
       "env": {}
     }
-  },
-  "model": "opus"
+  }
 }
