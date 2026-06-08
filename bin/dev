@@ -6,6 +6,9 @@
 # so this works regardless of base-index / pane-base-index settings.
 set -euo pipefail
 SESSION="dev"
+COLS=$(tput cols)
+LINES=$(tput lines)
+RIGHT_COLS=$(( COLS * 35 / 100 ))
 
 # Re-attach if session already running
 if tmux has-session -t "$SESSION" 2>/dev/null; then
@@ -13,13 +16,14 @@ if tmux has-session -t "$SESSION" 2>/dev/null; then
 fi
 
 # ── Window 1: dev ────────────────────────────────────────────────────────────
-tmux new-session -d -s "$SESSION" -n "dev" -x "$(tput cols)" -y "$(tput lines)"
+tmux new-session -d -s "$SESSION" -n "dev" -x "$COLS" -y "$LINES"
 
 # The session starts with one pane (left, large). Grab its id.
 left=$(tmux display-message -p -t "$SESSION:dev" '#{pane_id}')
 
 # Right column gets 35%; left (claude) keeps 65%. Capture the new pane's id.
-rtop=$(tmux split-window -h -p 35 -t "$left" -P -F '#{pane_id}')
+# Use -l with absolute columns: -p percentage requires an attached client.
+rtop=$(tmux split-window -h -l "$RIGHT_COLS" -t "$left" -P -F '#{pane_id}')
 
 # Split the right column: top = code-server, bottom = terminal.
 rbot=$(tmux split-window -v -t "$rtop" -P -F '#{pane_id}')
