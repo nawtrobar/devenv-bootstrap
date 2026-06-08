@@ -27,18 +27,19 @@ if [ ! -f "$SETTINGS" ]; then
   exit 1
 fi
 
-# Idempotent — skip if already present
+# Idempotent — both keys are written atomically so checking one is sufficient
 if jq -e '.extraKnownMarketplaces["resume-kit"]' "$SETTINGS" &>/dev/null; then
   echo "[ok] resume-kit already configured in $SETTINGS"
   exit 0
 fi
 
 tmp=$(mktemp)
+# Use // {} to safely handle null values for either key
 jq \
   --arg path "$PLUGIN_PATH" \
-  '.enabledPlugins["resume-kit@resume-kit"] = true
-   | .extraKnownMarketplaces["resume-kit"] = {
-       "source": { "source": "directory", "path": $path }
+  '(.enabledPlugins // {}) |= . + {"resume-kit@resume-kit": true}
+   | (.extraKnownMarketplaces // {}) |= . + {
+       "resume-kit": {"source": {"source": "directory", "path": $path}}
      }' \
   "$SETTINGS" > "$tmp"
 mv "$tmp" "$SETTINGS"

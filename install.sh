@@ -167,8 +167,18 @@ link_claude() {
 
   # Generate settings.json from template (not a symlink — contains machine-specific paths)
   mkdir -p "$HOME/.claude"
+  case "$HOME" in
+    *\|*) die "\$HOME contains '|' — cannot safely substitute paths in settings template" ;;
+  esac
+  if [ -f "$HOME/.claude/settings.json" ] && [ ! -L "$HOME/.claude/settings.json" ]; then
+    warn "Backing up existing ~/.claude/settings.json -> ~/.claude/settings.json.bak"
+    cp "$HOME/.claude/settings.json" "$HOME/.claude/settings.json.bak"
+  fi
   sed "s|__HOME__|$HOME|g" "$DOTFILES_DIR/claude/settings.json.template" \
     > "$HOME/.claude/settings.json"
+  if grep -q '__HOME__' "$HOME/.claude/settings.json"; then
+    die "Template substitution failed — __HOME__ still present in generated settings.json"
+  fi
   ok "Generated ~/.claude/settings.json"
 
   link "$DOTFILES_DIR/claude/commands"       "$HOME/.claude/commands"
