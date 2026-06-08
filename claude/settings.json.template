@@ -60,7 +60,6 @@
       "Bash(touch:*)"
     ]
   },
-  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -85,24 +84,6 @@
       }
     ]
   },
-  "enabledPlugins": {
-    "resume-kit@resume-kit": true,
-    "fiverr-kit@fiverr-agents-and-skills": true
-  },
-  "extraKnownMarketplaces": {
-    "resume-kit": {
-      "source": {
-        "source": "directory",
-        "path": "/mnt/c/Users/nawtr/code/resume-kit"
-      }
-    },
-    "fiverr-agents-and-skills": {
-      "source": {
-        "source": "directory",
-        "path": "/mnt/c/Users/nawtr/code/fiverr-agents-and-skills"
-      }
-    }
-  },
   "theme": "dark",
   "mcpServers": {
     "filesystem": {
@@ -110,7 +91,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/mnt/c/Users/nawtr"
+        "__HOME__"
       ],
       "env": {}
     },

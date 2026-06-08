@@ -18,12 +18,14 @@ devenv-bootstrap/
 ├── tmux/
 │   └── .tmux.conf      # Linked to ~/.tmux.conf (TPM, Catppuccin colors)
 └── claude/
-    ├── settings.json   # Linked to ~/.claude/settings.json
-    ├── commands/       # Linked to ~/.claude/commands/  (custom slash commands)
-    ├── agents/         # Linked to ~/.claude/agents/    (custom sub-agents)
-    ├── hooks/          # Linked to ~/.claude/hooks/     (event hooks)
-    └── plugin/         # Linked to ~/.claude/skills/devenv-bootstrap/ (auto-loaded skills)
-        └── skills/     # Model-invoked skills (auto-triggered by context)
+    ├── settings.json.template  # Generated to ~/.claude/settings.json (not symlinked)
+    ├── commands/               # Linked to ~/.claude/commands/  (custom slash commands)
+    ├── agents/                 # Linked to ~/.claude/agents/    (custom sub-agents)
+    ├── hooks/                  # Linked to ~/.claude/hooks/     (event hooks)
+    ├── optional/               # Opt-in plugin installers (run manually per-machine)
+    │   └── add-resume-kit.sh
+    └── plugin/                 # Linked to ~/.claude/skills/devenv-bootstrap/ (auto-loaded skills)
+        └── skills/             # Model-invoked skills (auto-triggered by context)
 ```
 
 ## Install
@@ -34,7 +36,18 @@ cd ~/devenv-bootstrap
 bash install.sh
 ```
 
-The script installs packages, sets up Oh My Zsh + plugins, TPM, neovim, Claude Code, then symlinks all dotfiles.
+The script installs packages, sets up Oh My Zsh + plugins, TPM, neovim, Claude Code, then symlinks all dotfiles. `~/.claude/settings.json` is generated from `claude/settings.json.template` (not symlinked) so machine-specific paths like `$HOME` are substituted at install time.
+
+## Optional Claude plugins
+
+Some plugins are machine-specific and not installed by default. Run the corresponding script in `claude/optional/` to add them to `~/.claude/settings.json` on a given machine.
+
+```bash
+# Add resume-kit (clone it first if needed)
+git clone git@github.com:nawtrobar/resume-kit.git ~/resume-kit
+bash claude/optional/add-resume-kit.sh          # uses ~/resume-kit by default
+bash claude/optional/add-resume-kit.sh /custom/path  # or specify a path
+```
 
 ## Claude skills (auto-triggered)
 

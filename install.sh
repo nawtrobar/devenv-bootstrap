@@ -164,7 +164,13 @@ link_dotfiles() {
 # ── Claude config ────────────────────────────────────────────────────────────
 link_claude() {
   info "Linking Claude config..."
-  link "$DOTFILES_DIR/claude/settings.json"  "$HOME/.claude/settings.json"
+
+  # Generate settings.json from template (not a symlink — contains machine-specific paths)
+  mkdir -p "$HOME/.claude"
+  sed "s|__HOME__|$HOME|g" "$DOTFILES_DIR/claude/settings.json.template" \
+    > "$HOME/.claude/settings.json"
+  ok "Generated ~/.claude/settings.json"
+
   link "$DOTFILES_DIR/claude/commands"       "$HOME/.claude/commands"
   link "$DOTFILES_DIR/claude/agents"         "$HOME/.claude/agents"
 
